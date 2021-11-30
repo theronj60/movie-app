@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/maxence-charriere/go-app/v9/pkg/app"
-	"github.com/theronj60/movies-app/routes"
+	"github.com/theronj60/movies-app/views"
 )
 
 // The main function is the entry point where the app is configured and started.
@@ -16,8 +16,9 @@ func main() {
 	//
 	// This is done by calling the Route() function,  which tells go-app what
 	// component to display for a given path, on both client and server-side.
-	app.Route("/", &routes.Hello{})
+	app.Route("/", &views.Layout{})
 
+	app.Route("/movies", &views.Movies{})
 	// Once the routes set up, the next thing to do is to either launch the app
 	// or the server that serves the app.
 	//
@@ -40,8 +41,14 @@ func main() {
 	http.Handle("/", &app.Handler{
 		Name:        "Hello",
 		Description: "An Hello World! example",
+		Styles: []string{
+			"/web/css/main.css", // Loads hello.css file.
+		},
 	})
-
+	http.Handle("/movies", &app.Handler{
+		Name:        "Movies",
+		Description: "Displays movie info",
+	})
 	if err := http.ListenAndServe(":8000", nil); err != nil {
 		log.Fatal(err)
 	}
